@@ -16,9 +16,7 @@ public class ReadExcelFile {
         Workbook workbook = new XSSFWorkbook(excelFile);
         Sheet sheet = workbook.getSheet("Таблица по выездам");
         int lastRowIndex = sheet.getLastRowNum();
-
-        Fires fire = new Fires();
-        List<Fires> listFires = ReadRows.readRows(lastRowIndex, fire, sheet);
+        List<Fires> listFires = ReadRows.readRows(lastRowIndex, sheet);
 
         // Close WorkBook
         workbook.close();

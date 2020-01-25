@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReadRows {
-    public static List<Fires> readRows (int lastRowIndex, Fires fire, Sheet sheet){
-        List  list = new ArrayList<Fires>();
+    public static List<Fires> readRows (int lastRowIndex, Sheet sheet){
+        List list = new ArrayList<Fires>();
 
-        for (int i = 5; i <= lastRowIndex; i++){
+        for (int i = 1; i <= lastRowIndex; i++){
+            Fires fire = new Fires();
             Row currentRow = sheet.getRow(i);
             int cellIndex = 0;
+            System.out.println(DirectToCategory.directToCategory(fire, currentRow, cellIndex));
             list.add(DirectToCategory.directToCategory(fire, currentRow, cellIndex));
         }
 
