@@ -102,7 +102,6 @@ public class Convert {
             Fires fire = new Fires();
             Row currentRow = sheet.getRow(i);
             int cellIndex = 0;
-            System.out.println(DirectToCategory.directToCategory(fire, currentRow, cellIndex));
             list.add(directToCategory(fire, currentRow, cellIndex));
         }
 
@@ -133,8 +132,6 @@ public class Convert {
 
     private static String convertToJsonString(List<Fires> fires) {
         ObjectMapper mapper = new ObjectMapper();
-        //String jsonString = "";
-
         try {
             return mapper.writeValueAsString(fires);
         } catch (JsonProcessingException e) {
