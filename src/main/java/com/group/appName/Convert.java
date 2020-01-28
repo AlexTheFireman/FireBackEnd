@@ -2,8 +2,12 @@ package com.group.appName;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,43 +20,40 @@ import java.util.List;
 
 public class Convert {
 
-    public static String start() throws IOException {
+    public static String start(final String path) throws IOException {
         // Step 1: Read Excel File into Java List Objects
-        List<Fires> fires = readExcelFile("D://R2.xlsx");
+        List<Fires> fires = readExcelFile(path);
 
         // Step 2: Convert Java Objects to JSON String
-        String jsonString = convertObjects2JsonString(fires);
+        String jsonString = convertToJsonString(fires);
 
-        System.out.println(jsonString);
+        //System.out.println(jsonString);
         return jsonString;
     }
 
-
-    public static String sortCellData (final Cell cell) {
+    public static String sortCellData(final Cell cell) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM.dd.yyyy");
         String result = "";
         Cell currentCell = cell;
         switch (currentCell.getCellType()) {
             case STRING:
-                result = currentCell.getRichStringCellValue()
-                        .getString();
+                result = currentCell.toString();
                 break;
             case NUMERIC:
                 if (DateUtil.isCellInternalDateFormatted(currentCell)) {
                     result = sdf.format(currentCell.getDateCellValue());
                 } else {
-                    result = Double.toString(currentCell.getNumericCellValue());
+                    result = currentCell.toString();
                 }
                 break;
             case BOOLEAN:
-                result = Boolean.toString(currentCell.getBooleanCellValue());
+                result = currentCell.toString();
                 break;
             case FORMULA:
-                result = currentCell.getCellFormula()
-                        .toString();
+                result = currentCell.toString();
                 break;
             case BLANK:
-                System.out.println();
+                result = currentCell.toString();
                 break;
             default:
                 break;
@@ -60,9 +61,35 @@ public class Convert {
         return result;
     }
 
-    public static Fires directToCategory (Fires fire, Iterator<Cell> cellsInRow, int cellIndex) {
-        while (cellsInRow.hasNext()) {
-            Cell cell = cellsInRow.next();
+    public static List<Fires> readExcelFile(final String filePath) throws IOException {
+        FileInputStream excelFile = new FileInputStream(new File(filePath));
+        Workbook workbook = new XSSFWorkbook(excelFile);
+        Sheet sheet = workbook.getSheet("Таблица по выездам");
+        int lastRowIndex = sheet.getLastRowNum();
+        List<Fires> listFires = readRows(lastRowIndex, sheet);
+
+        // Close WorkBook
+        workbook.close();
+
+        return listFires;
+    }
+
+    public static List<Fires> readRows (int lastRowIndex, final Sheet sheet){
+        List list = new ArrayList<Fires>();
+
+        for (int i = 1; i <= lastRowIndex; i++){
+            Fires fire = new Fires();
+            Row currentRow = sheet.getRow(i);
+            int cellIndex = 0;
+            list.add(directToCategory(fire, currentRow, cellIndex));
+        }
+
+        return list;
+    }
+
+    public static Fires directToCategory (Fires fire, final Row row, int cellIndex) {
+        for(int i = cellIndex; i <= 6; i ++){
+            Cell cell = row.getCell(i);
 
             if (cellIndex == 0) { // ID
                 fire.setId(sortCellData(cell));
@@ -82,75 +109,8 @@ public class Convert {
         return fire;
     }
 
-    public static List readingRows (int rowNumber, Iterator <Row> rows, Fires fire){
-        List list = new ArrayList();
-
-        while (rows.hasNext()) {
-            Row currentRow = rows.next();
-
-            // skip header
-            if (rowNumber == 0) {
-                rowNumber++;
-                continue;
-            }
-
-            Iterator<Cell> cellsInRow = currentRow.iterator();
-            int cellIndex = 0;
-            list.add(directToCategory(fire, cellsInRow, cellIndex));
-
-        }
-        return list;
-    }
-
-    /**
-     * Read Excel File into Java List Objects
-     *
-     * @param filePath
-     * @return
-     * @throws IOException
-     */
-    private static List readExcelFile(String filePath) throws IOException {
-        FileInputStream excelFile = new FileInputStream(new File(filePath));
-        Workbook workbook = new XSSFWorkbook(excelFile);
-        Sheet sheet = workbook.getSheet("Таблица по выездам");
-        Iterator<Row> rows = sheet.iterator();
-        List listFires;
-        int rowNumber = 0;
-        Fires fire = new Fires();
-
-        listFires = readingRows(rowNumber, rows, fire);
-        /*while (rows.hasNext()) {
-            Row currentRow = rows.next();
-
-            // skip header
-            if (rowNumber == 0) {
-                rowNumber++;
-                continue;
-            }
-
-            Iterator<Cell> cellsInRow = currentRow.iterator();
-            Fires fire = new Fires();
-            int cellIndex = 0;
-            directToCategory(fire, cellsInRow, cellIndex);
-
-            listFires.add(fire);
-        }*/
-
-        // Close WorkBook
-        workbook.close();
-
-        return listFires;
-    }
-
-    /**
-     * Convert Java Objects to JSON String
-     *
-     * @param fires
-     */
-    private static String convertObjects2JsonString(List<Fires> fires) {
+    private static String convertToJsonString(final List<Fires> fires) {
         ObjectMapper mapper = new ObjectMapper();
-        String jsonString = "";
-
         try {
             return mapper.writeValueAsString(fires);
         } catch (JsonProcessingException e) {

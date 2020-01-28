@@ -10,12 +10,11 @@ import java.io.IOException;
 @RestController
 public class FirstRestController {
 
-    //@GetMapping(value = "/1", produces = "Content-type=application/json")
     @RequestMapping(value = "/1", method = RequestMethod.GET, produces = "application/json")
     public String stub() throws IOException {
         Convert convert = new Convert();
-
-        String s = convert.start();
+        String filePath = "D://R2.xlsx";
+        String s = convert.start(filePath);
         return s;
     }
 }
