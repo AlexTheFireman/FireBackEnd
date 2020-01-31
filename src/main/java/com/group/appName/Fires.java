@@ -4,7 +4,7 @@ public class Fires {
     private String id;
     private String date;
     private String message;
-    private String address_object_fireFeature;
+    private String addressObjectFireFeature;
     private String district;
     private String fireStation;
 
@@ -12,11 +12,11 @@ public class Fires {
     public Fires() {
     }
 
-    public Fires(String id, String date, String message, String address_object_fireFeature, String district, String fireStation) {
+    public Fires(String id, String date, String message, String addressObjectFireFeature, String district, String fireStation) {
         this.id = id;
         this.date = date;
         this.message = message;
-        this.address_object_fireFeature = address_object_fireFeature;
+        this.addressObjectFireFeature = addressObjectFireFeature;
         this.district = district;
         this.fireStation = fireStation;
     }
@@ -45,12 +45,12 @@ public class Fires {
         this.message = message;
     }
 
-    public String getAddress_object_fireFeature() {
-        return address_object_fireFeature;
+    public String getAddressObjectFireFeature() {
+        return addressObjectFireFeature;
     }
 
     public void setAddress_object_fireFeature(String address_object_fireFeature) {
-        this.address_object_fireFeature = address_object_fireFeature;
+        this.addressObjectFireFeature = addressObjectFireFeature;
     }
 
     public String getDistrict() {
@@ -72,7 +72,7 @@ public class Fires {
 
     @Override
     public String toString() {
-        return "Fire [id=" + id + ", date=" + date + ", message=" + message + ", address_object_fireFeature=" + address_object_fireFeature + ", district=" + district + ", fireStation=" + fireStation + "]";
+        return "Fire [id=" + id + ", date=" + date + ", message=" + message + ", addressObjectFireFeature=" + addressObjectFireFeature + ", district=" + district + ", fireStation=" + fireStation + "]";
     }
 
 }
