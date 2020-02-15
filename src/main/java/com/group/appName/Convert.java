@@ -97,7 +97,7 @@ public class Convert {
             } else if (cellIndex == 2) { // Message
                 fire.setMessage(sortCellData(cell));
             } else if (cellIndex == 3) { // Address
-                fire.setAddress_object_fireFeature(sortCellData(cell));
+                fire.setAddressObjectFireFeature(sortCellData(cell));
             } else if (cellIndex == 4) { // District
                 fire.setDistrict(sortCellData(cell));
             } else if (cellIndex == 5) { // Fire Station

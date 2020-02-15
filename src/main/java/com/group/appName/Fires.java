@@ -49,7 +49,7 @@ public class Fires {
         return addressObjectFireFeature;
     }
 
-    public void setAddress_object_fireFeature(String address_object_fireFeature) {
+    public void setAddressObjectFireFeature(String addressObjectFireFeature) {
         this.addressObjectFireFeature = addressObjectFireFeature;
     }
 
