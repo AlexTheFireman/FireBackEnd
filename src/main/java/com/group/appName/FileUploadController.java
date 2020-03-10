@@ -14,6 +14,7 @@ import java.io.IOException;
 @RestController
 public class FileUploadController {
 
+<<<<<<< HEAD
     @Autowired
     private FireService fireService;
 
@@ -35,3 +36,10 @@ public class FileUploadController {
         return convertFile;
     }
 }
+=======
+	@RequestMapping(value = "/api/upload", method = RequestMethod.POST)
+	public @ResponseBody String handleFileUpload(@RequestParam("file") MultipartFile multipartFile) {
+		return "Uploaded: " + multipartFile.getSize() + " bytes";
+	}
+}
+>>>>>>> 05559326623520ab7f18402f68f25fc3a9871088
