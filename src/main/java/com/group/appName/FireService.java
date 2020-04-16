@@ -1,7 +1,9 @@
 package com.group.appName;
 
+import com.group.appName.model.FileEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
@@ -9,10 +11,15 @@ import org.hibernate.cfg.Configuration;
 
 @Service
 public class FireService {
+
+    @Autowired
+    public DBFileRepository dbFileRepository;
+
     SessionFactory sessionFactory = new Configuration()
             .configure("hibernate.cfg.xml")
             .addAnnotatedClass(FileEntity.class)
             .buildSessionFactory();
+
 
     public void addNewFile(File file) throws IOException {
 
@@ -26,6 +33,7 @@ public class FireService {
             obj.setFileName(name);
             obj.setFileData(s);
             session.save(obj);
+            dbFileRepository.save(obj);
             session.getTransaction()
                     .commit();
         } finally {

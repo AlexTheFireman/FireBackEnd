@@ -1,9 +1,12 @@
 package com.group.appName;
 
+import com.group.appName.controller.UploadFileResponse;
+import com.group.appName.model.FileEntity;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
 import java.io.File;
@@ -16,13 +19,17 @@ public class FileUploadController {
 	
     @Autowired
     private FireService fireService;
-
+    public FileEntity fileEntity;
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
-    public @ResponseBody String uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException {
+    public @ResponseBody UploadFileResponse uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException {
         File file = convert(multiPartFile);
         fireService.addNewFile(file);
-        return "Success";
+        String downloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/get/")
+                .path(fileEntity.getFileName())
+                .toUriString();
+        return new UploadFileResponse(fileEntity.getFileName(), downloadUri);
     }
 
     public static File convert(MultipartFile file) throws IOException {
@@ -40,6 +47,8 @@ public class FileUploadController {
         String firesInfo = fireService.getFile(fileName);
         return firesInfo;
     }
+
+
 
 
 
