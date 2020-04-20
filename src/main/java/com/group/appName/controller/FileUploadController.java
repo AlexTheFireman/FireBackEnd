@@ -1,17 +1,15 @@
-package com.group.appName;
+package com.group.appName.controller;
 
-import com.group.appName.controller.UploadFileResponse;
-import com.group.appName.model.FileEntity;
+import com.group.appName.FireService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 
 @RestController
@@ -19,17 +17,13 @@ public class FileUploadController {
 	
     @Autowired
     private FireService fireService;
-    public FileEntity fileEntity;
+
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
-    public @ResponseBody UploadFileResponse uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException {
+    public @ResponseBody String uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException {
         File file = convert(multiPartFile);
         fireService.addNewFile(file);
-        String downloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/get/")
-                .path(fileEntity.getFileName())
-                .toUriString();
-        return new UploadFileResponse(fileEntity.getFileName(), downloadUri);
+        return "Success";
     }
 
     public static File convert(MultipartFile file) throws IOException {
@@ -46,6 +40,13 @@ public class FileUploadController {
     public String getFile(@PathVariable String fileName) throws IOException {
         String firesInfo = fireService.getFile(fileName);
         return firesInfo;
+    }
+
+    @RequestMapping(value = "/api/get/all", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List getFileList() {
+        List fileList = fireService.getAll();
+        return fileList;
     }
 
 
