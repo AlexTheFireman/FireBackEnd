@@ -37,22 +37,11 @@ public class FireService {
 
     public String getFile(String fileName) {
 
-        FileEntity obj = null;
+        FileEntity obj;
         Session session = sessionFactory.getCurrentSession();
-        try {
-            session.beginTransaction();
+
             obj = session.get(FileEntity.class, fileName);
-        } catch (Exception sqlException) {
-            if (null != session.getTransaction()) {
-                System.out.println("\n.......Transaction Is Being Rolled Back.......");
-                session.getTransaction()
-                        .rollback();
-            }
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
+
         if (obj != null) {
             return obj.getFileData();
         }
