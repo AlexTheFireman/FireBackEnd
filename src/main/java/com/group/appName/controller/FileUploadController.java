@@ -11,15 +11,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-
 @RestController
 public class FileUploadController {
-	
+
     @Autowired
     private FireService fireService;
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
-    public @ResponseBody String uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException {
+    public @ResponseBody
+    String uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException {
         File file = convert(multiPartFile);
         fireService.addNewFile(file);
         return "Success";
@@ -47,11 +47,5 @@ public class FileUploadController {
         List fileList = fireService.getAll();
         return fileList;
     }
-
-
-
-
-
-
 }
 
