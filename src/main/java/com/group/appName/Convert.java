@@ -30,7 +30,7 @@ public class Convert {
         return jsonString;
     }
 
-    public static String sortCellData(final Cell cell) {
+    private static String sortCellData(final Cell cell) {
         SimpleDateFormat sdf = new SimpleDateFormat("MM.dd.yyyy");
         String result = "";
         Cell currentCell = cell;
@@ -42,7 +42,9 @@ public class Convert {
                 if (DateUtil.isCellInternalDateFormatted(currentCell)) {
                     result = sdf.format(currentCell.getDateCellValue());
                 } else {
-                    result = currentCell.toString();
+                    double doub = currentCell.getNumericCellValue();
+                    int value = (int) doub;
+                    result = Integer.toString(value);
                 }
                 break;
             case BOOLEAN:

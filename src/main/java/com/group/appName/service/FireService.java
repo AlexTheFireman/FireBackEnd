@@ -1,12 +1,14 @@
-package com.group.appName;
+package com.group.appName.service;
 
+import com.group.appName.Convert;
 import com.group.appName.model.FileEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+
+import java.util.*;
 
 import org.hibernate.cfg.Configuration;
 
@@ -36,12 +38,22 @@ public class FireService {
     }
 
     public String getFile(String fileName) {
-
-        FileEntity obj;
+        FileEntity obj = null;
         Session session = sessionFactory.getCurrentSession();
-
+        try {
+            session.beginTransaction();
             obj = session.get(FileEntity.class, fileName);
-
+        } catch (Exception sqlException) {
+            if (null != session.getTransaction()) {
+                System.out.println("\n.......Transaction Is Being Rolled Back.......");
+                session.getTransaction()
+                        .rollback();
+            }
+        } finally {
+            if (session != null) {
+                session.close();
+            }
+        }
         if (obj != null) {
             return obj.getFileData();
         }
@@ -56,3 +68,5 @@ public class FireService {
         return list;
     }
 }
+
+
