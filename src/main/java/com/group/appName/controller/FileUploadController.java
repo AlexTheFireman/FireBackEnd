@@ -1,6 +1,7 @@
 package com.group.appName.controller;
 
-import com.group.appName.FireService;
+import com.group.appName.service.FireService;
+import com.group.appName.service.FilterManager;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,9 @@ public class FileUploadController {
 
     @Autowired
     private FireService fireService;
+
+    @Autowired
+    private FilterManager filterManager;
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
     public @ResponseBody
@@ -39,6 +43,13 @@ public class FileUploadController {
     public String getFile(@PathVariable String fileName) throws IOException {
         String firesInfo = fireService.getFile(fileName);
         return firesInfo;
+    }
+
+    @RequestMapping(value = "/api/get/{fileName}", method = RequestMethod.POST, produces = "application/json",
+            consumes = "application/json")
+    @ResponseBody
+    public String getInfo(@PathVariable String fileName, @RequestBody String params) throws IOException {
+        return filterManager.filterOne(fileName, params);
     }
 
     @RequestMapping(value = "/api/get/all", method = RequestMethod.GET, produces = "application/json")

@@ -62,7 +62,7 @@ public class Convert {
         return result;
     }
 
-    public static List<Fires> readExcelFile(final String filePath) throws IOException {
+    private static List<Fires> readExcelFile(final String filePath) throws IOException {
         FileInputStream excelFile = new FileInputStream(new File(filePath));
         Workbook workbook = new XSSFWorkbook(excelFile);
         Sheet sheet = workbook.getSheet("Таблица по выездам");

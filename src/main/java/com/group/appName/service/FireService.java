@@ -14,7 +14,7 @@ import org.hibernate.cfg.Configuration;
 
 @Service
 public class FireService {
-    SessionFactory sessionFactory = new Configuration()
+    private SessionFactory sessionFactory = new Configuration()
             .configure("hibernate.cfg.xml")
             .addAnnotatedClass(FileEntity.class)
             .buildSessionFactory();
