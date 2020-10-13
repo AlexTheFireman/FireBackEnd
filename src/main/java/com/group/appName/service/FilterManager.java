@@ -16,54 +16,63 @@ public class FilterManager {
     @Autowired
     private FireService fireService;
 
-    public String filterOne (String fileName, String params){
-        String info = fireService.getFile(fileName);
-        JSONArray infoFromDB = new JSONArray(info);
+    public String filterByParams (String fileName, String params){
+        JSONArray dataFromFile = getDataFromFile(fileName);
         JSONObject jsonObject = new JSONObject(params);
-        ArrayList<String> fields = new ArrayList<>(jsonObject.keySet());
+        ArrayList<String> filterFields = new ArrayList<>(jsonObject.keySet());
 
-        for (int i = 0; i < fields.size(); i++) {
-            ArrayList<JSONObject> finalArray = filterByFlag(infoFromDB, params, fields.get(i));
-            infoFromDB = new JSONArray(finalArray);
+        for (String f : filterFields) {
+            ArrayList<JSONObject> finalArray = filterByField(dataFromFile, params, f);
+            dataFromFile = new JSONArray(finalArray);
         }
-        return infoFromDB.toString();
+        return dataFromFile.toString();
     }
 
-    private List<String> getFlagsList(String params, String field) {
+    private JSONArray getDataFromFile(String fileName) {
+        String data = fireService.getFile(fileName);
+        return new JSONArray(data);
+    }
+
+    private ArrayList<JSONObject> filterByField (JSONArray dataFromDB, String params, String filterField) {
+        ArrayList<JSONObject> filteredList = new ArrayList<>();
+        List<String> filterFieldList = getFieldList(params, filterField);
+        if(filterFieldList.size() > 0) {
+            for (String f : filterFieldList) {
+                for (int m = 0; m < dataFromDB.length(); m++) {
+                    JSONObject obj = dataFromDB.getJSONObject(m);
+                    String StringFromBD = obj.getString(filterField);
+                    if (StringFromBD.equals(f)) {
+                        if (!filteredList.contains(obj)) {
+                            filteredList.add(obj);
+                        }
+                    }
+                }
+            }
+        } else {
+            for(int i = 0; i < dataFromDB.length(); i++){
+                filteredList.add(dataFromDB.getJSONObject(i));
+            }
+        }
+        return filteredList;
+    }
+
+    private List<String> getFieldList(String params, String filterField) {
         JsonObject jsonObject = new Gson().fromJson(params, JsonObject.class);
-        JsonArray jsonArray = isArray(jsonObject, field);
-        String[] arr = new Gson().fromJson(jsonArray, String[].class);
-        return Arrays.asList(arr);
+        JsonArray jsonArray = isArray(jsonObject, filterField);
+        String[] array = new Gson().fromJson(jsonArray, String[].class);
+        return Arrays.asList(array);
     }
 
-     private JsonArray isArray(JsonObject jsonObject, String field){
+    private JsonArray isArray(JsonObject jsonObject, String filterField){
         JsonArray jsonArray = new JsonArray();
-        JsonElement element = jsonObject.get(field);
+        JsonElement element = jsonObject.get(filterField);
         if (!element.isJsonArray()){
             String s = element.getAsString();
             jsonArray.add(s);
         } else {
-            jsonArray = jsonObject.getAsJsonArray(field);
+            jsonArray = jsonObject.getAsJsonArray(filterField);
         }
         return jsonArray;
-    }
-
-    private ArrayList<JSONObject> filterByFlag (JSONArray infoFromDB, String params, String field) {
-        ArrayList<JSONObject> filtered = new ArrayList<>();
-        List<String> flagsList = getFlagsList(params, field);
-        for (int k = 0; k < flagsList.size(); k++) {
-            for (int m = 0; m < infoFromDB.length(); m++) {
-                JSONObject obj = infoFromDB.getJSONObject(m);
-                String StringFromBD = obj.getString(field);
-                String etalonFromClient = flagsList.get(k);
-                if (StringFromBD.equals(etalonFromClient)) {
-                    if (!filtered.contains(obj)) {
-                        filtered.add(obj);
-                    }
-                }
-            }
-        }
-        return filtered;
     }
 }
 
