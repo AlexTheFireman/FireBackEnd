@@ -25,7 +25,7 @@ public class FileController {
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
     @ResponseBody
-    public ModelAndView uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException, NullPointerException {
+    public String uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException, NullPointerException {
         File file = convertFromMultipartToFile(multiPartFile);
         return CheckFileNameForDB.checkFileNameBeforeUploadToDB(file);
     }
