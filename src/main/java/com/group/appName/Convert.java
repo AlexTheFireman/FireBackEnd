@@ -24,7 +24,6 @@ import static org.apache.commons.io.FilenameUtils.getExtension;
 
 
 public class Convert {
-
     public static String convertToJsonString(final String path) throws IOException {
         List<Fire> fires = readExcelFile(path);
         ObjectMapper mapper = new ObjectMapper();
@@ -35,12 +34,10 @@ public class Convert {
         }
         return null;
     }
-
     private static List<Fire> readExcelFile(final String filePath) throws IOException {
         FileInputStream excelFile = new FileInputStream(new File(filePath));
         return getListOfFires(filePath, excelFile);
     }
-
     private static List<Fire> getListOfFires (String filePath, FileInputStream excelFile) throws IOException
     {
         if (getExtension(filePath).equals("xlsx")) {
@@ -61,9 +58,8 @@ public class Convert {
             return null;
         }
     }
-
     private static List<Fire> readRows(int lastRowIndex, final Sheet sheet){
-        List firesList = new ArrayList<Fire>();
+        List <Fire> firesList = new ArrayList<Fire>();
 
         for (int i = 5; i <= lastRowIndex; i++){
             Fire fire = new Fire();
@@ -73,7 +69,6 @@ public class Convert {
         }
         return firesList;
     }
-
     private static Fire setFireInfoByCategory(Fire fire, final Row row, int cellIndex) {
         int lastInterestingCellIndex = 35;
         for(int i = cellIndex; i <= lastInterestingCellIndex; i ++){
@@ -154,7 +149,6 @@ public class Convert {
         }
         return fire;
     }
-
     private static String sortCellData(final Cell cell) {
         String result = "";
 

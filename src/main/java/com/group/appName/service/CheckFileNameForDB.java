@@ -6,6 +6,7 @@ import java.util.List;
 
 import static org.apache.commons.io.FilenameUtils.getExtension;
 
+
 public class CheckFileNameForDB {
 
        public static String checkFileNameBeforeUploadToDB (File fileName) throws IOException {
@@ -24,8 +25,7 @@ public class CheckFileNameForDB {
                return "Null";
            }
     }
-
-    public static boolean isFileNameExistInList(List<String> fileList, File fileName) {
+    private static boolean isFileNameExistInList(List<String> fileList, File fileName) {
         for (String s : fileList) {
 
             if (s.equals(fileName.getName())) {
