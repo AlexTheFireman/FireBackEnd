@@ -27,9 +27,7 @@ public class FileController {
     @ResponseBody
     public String uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException, NullPointerException {
         File file = convertFromMultipartToFile(multiPartFile);
-        Enum status = CheckFileNameForDB.checkFileNameBeforeUploadToDB(file);
-
-        return DownloadStatus.status.getStatus();
+        return CheckFileNameForDB.checkFileNameBeforeUploadToDB(file);
     }
 
     private static File convertFromMultipartToFile(MultipartFile file) throws IOException {
