@@ -1,13 +1,13 @@
 package com.group.appName.controller;
 
 import com.group.appName.service.CheckFileNameForDB;
+import com.group.appName.service.DownloadStatus;
 import com.group.appName.service.FireService;
 import com.group.appName.service.FilterManager;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,10 +27,12 @@ public class FileController {
     @ResponseBody
     public String uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException, NullPointerException {
         File file = convertFromMultipartToFile(multiPartFile);
-        return CheckFileNameForDB.checkFileNameBeforeUploadToDB(file);
+        Enum status = CheckFileNameForDB.checkFileNameBeforeUploadToDB(file);
+
+        return DownloadStatus.status.getStatus();
     }
 
-    public static File convertFromMultipartToFile(MultipartFile file) throws IOException {
+    private static File convertFromMultipartToFile(MultipartFile file) throws IOException {
         File convertFile = new File(file.getOriginalFilename());
         convertFile.createNewFile();
         FileOutputStream fos = new FileOutputStream(convertFile);

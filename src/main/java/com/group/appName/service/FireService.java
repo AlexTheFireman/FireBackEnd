@@ -21,12 +21,13 @@ public class FireService {
     static void addNewFile(File file) throws IOException, IllegalStateException, NullPointerException {
         Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
-        FileEntity obj = new FileEntity();
-        String s = Convert.convertToJsonString(file.getPath());
+        FileEntity object = new FileEntity();
+        String dataAsJSON = Convert.convertToJsonString(file.getPath());
+        Byte[] arrayOfBytesWrapper = Convert.convertFromJsonToBytesArrayWrapper(dataAsJSON);
         String name = file.getName();
-        obj.setFileName(name);
-        obj.setFileData(s);
-        session.save(obj);
+        object.setFileName(name);
+        object.setFileData(arrayOfBytesWrapper);
+        session.save(object);
         session.getTransaction()
                 .commit();
     }
@@ -49,7 +50,7 @@ public class FireService {
             }
         }
         if (obj != null) {
-            return obj.getFileData();
+            return Convert.convertFromBytesWrapArrayToString(obj.getFileData());
         }
         return null;
     }

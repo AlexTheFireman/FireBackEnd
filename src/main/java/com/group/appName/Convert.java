@@ -2,6 +2,7 @@ package com.group.appName;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.group.appName.model.FileEntity;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -14,6 +15,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -185,6 +188,27 @@ public class Convert {
                 break;
         }
         return result;
+    }
+
+    public static Byte[] convertFromJsonToBytesArrayWrapper(String jsonString) throws UnsupportedEncodingException {
+        byte[] bytes = jsonString.getBytes("utf-8");
+        Byte[] bytesWrapArray = new Byte[bytes.length];
+        int i = 0;
+        for(byte b : bytes){
+            bytesWrapArray[i++] = b;
+        }
+        return bytesWrapArray;
+    }
+
+    public static String convertFromBytesWrapArrayToString(Byte[] bytesWrapArray){
+        byte[] bytes = new byte[bytesWrapArray.length];
+        int i=0;
+        for(Byte b: bytesWrapArray) {
+            bytes[i++] = b.byteValue();
+        }
+        //byte[] arrayOfBytes = ArrayUtils.toPrimitive(bytesWrapArray); or we could use commons-lang3 dependency for
+        // using toPrimitive() method;
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }
 

@@ -9,26 +9,27 @@ import static org.apache.commons.io.FilenameUtils.getExtension;
 
 public class CheckFileNameForDB {
 
-       public static String checkFileNameBeforeUploadToDB (File fileName) throws IOException {
+       public static Enum checkFileNameBeforeUploadToDB (File fileName) throws IOException {
+           String fileExtension = getExtension(fileName.getPath());
            if (fileName != null) {
-               if ((getExtension(fileName.getPath()).equals("xlsx")) || (getExtension(fileName.getPath()).equals("xls"))) {
+               if ((fileExtension.equals("xlsx")) || (fileExtension.equals("xls"))) {
                    if (isFileNameExistInList(FireService.getAll(), fileName)) {
-                       return "FileAlreadyHas";
+                       return DownloadStatus.FILE_ALREADY_EXIST;
                    } else {
                        FireService.addNewFile(fileName);
-                       return "Success";
+                       return DownloadStatus.SUCCESS;
                    }
                } else {
-                   return "Check";
+                   return DownloadStatus.CHECK_FILE_EXTENSION;
                }
            } else {
-               return "Null";
+               return DownloadStatus.NO_FILE_SELECTED;
            }
     }
     private static boolean isFileNameExistInList(List<String> fileList, File fileName) {
         for (String s : fileList) {
 
-            if (s.equals(fileName.getName())) {
+            if (s.equalsIgnoreCase(fileName.getName())) {
                 return true;
             }
         }
