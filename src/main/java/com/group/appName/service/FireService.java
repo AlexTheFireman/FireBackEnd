@@ -5,20 +5,23 @@ import com.group.appName.model.FileEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+@EnableAutoConfiguration
 @Service
 public class FireService {
-    private static SessionFactory sessionFactory = new Configuration()
+
+    public static SessionFactory sessionFactory = new Configuration()
             .configure("hibernate.cfg.xml")
             .addAnnotatedClass(FileEntity.class)
             .buildSessionFactory();
 
-    static void addNewFile(File file) throws IOException, IllegalStateException, NullPointerException {
+    public void addNewFile(File file) throws IOException, IllegalStateException, NullPointerException {
         Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
         FileEntity object = new FileEntity();
@@ -64,7 +67,8 @@ public class FireService {
                 .executeUpdate();
         session.close();
     }
-    public static List getAll() {
+
+   public List getAll() {
         Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
         List list = session.createQuery("SELECT FE.fileName FROM FileEntity AS FE ")
