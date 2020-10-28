@@ -206,8 +206,6 @@ public class Convert {
         for(Byte b: bytesWrapArray) {
             bytes[i++] = b.byteValue();
         }
-        //byte[] arrayOfBytes = ArrayUtils.toPrimitive(bytesWrapArray); or we could use commons-lang3 dependency for
-        // using toPrimitive() method;
         return new String(bytes, StandardCharsets.UTF_8);
     }
 }
