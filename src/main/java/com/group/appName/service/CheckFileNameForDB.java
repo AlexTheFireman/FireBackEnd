@@ -9,15 +9,16 @@ import static org.apache.commons.io.FilenameUtils.getExtension;
 
 public class CheckFileNameForDB {
 
-       public static Enum checkFileNameBeforeUploadToDB(File fileName) throws IOException {
+       public static Enum checkFileNameBeforeUploadToDB (File fileName) throws IOException {
            String fileExtension = getExtension(fileName.getPath());
+           FireService fireservice = new FireService();
            if (fileName != null) {
                if ((fileExtension.equals("xlsx")) || (fileExtension.equals("xls"))) {
-                   FireService service = new FireService();
-                   if (isFileNameExistInList(service.getAll(), fileName)) {
+                   if (isFileNameExistInList(fireservice.getAll(), fileName)) {
                        return DownloadStatus.FILE_ALREADY_EXIST;
                    } else {
-                       service.addNewFile(fileName);
+
+                       fireservice.addNewFile(fileName);
                        return DownloadStatus.SUCCESS;
                    }
                } else {

@@ -4,9 +4,10 @@ import com.group.appName.Convert;
 import com.group.appName.model.FileEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,10 +17,8 @@ import java.util.List;
 @Service
 public class FireService {
 
-    public static SessionFactory sessionFactory = new Configuration()
-            .configure("hibernate.cfg.xml")
-            .addAnnotatedClass(FileEntity.class)
-            .buildSessionFactory();
+@Autowired
+SessionFactory sessionFactory;
 
     public void addNewFile(File file) throws IOException, IllegalStateException, NullPointerException {
         Session session = sessionFactory.getCurrentSession();
@@ -57,18 +56,17 @@ public class FireService {
         }
         return null;
     }
-
+    @Transactional
     public void deleteFile (String fileName) {
         Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
+
         System.out.println("File name = " + fileName);
         session.createQuery("DELETE FROM FileEntity WHERE fileName = :fileName")
                 .setParameter("fileName", fileName)
                 .executeUpdate();
-        session.close();
     }
 
-   public List getAll() {
+    public List getAll() {
         Session session = sessionFactory.getCurrentSession();
         session.beginTransaction();
         List list = session.createQuery("SELECT FE.fileName FROM FileEntity AS FE ")
