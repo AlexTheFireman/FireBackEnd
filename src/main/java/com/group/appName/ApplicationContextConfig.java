@@ -1,5 +1,6 @@
 package com.group.appName;
 
+import com.group.appName.model.FileEntity;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,8 +27,8 @@ public class ApplicationContextConfig {
 
     @Autowired
     Environment environment;
-
-    @Bean(name = "viewResolver")
+	
+	@Bean(name = "viewResolver")
     public InternalResourceViewResolver getViewResolver() {
 		return new InternalResourceViewResolver();
     }
@@ -35,24 +36,12 @@ public class ApplicationContextConfig {
 	@Bean(name = "dataSource")
 	public DataSource getDataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		// See: application.properties
+
 		dataSource.setUrl(environment.getProperty("spring.datasource.url"));
 		dataSource.setUsername(environment.getProperty("spring.datasource.username"));
 		dataSource.setPassword(environment.getProperty("spring.datasource.password"));
 		return dataSource;
 	}
-
-//    private Properties getHibernateProperties() {
-//    	Properties properties = new Properties();
-//    	properties.put("hibernate.show_sql", "true");
-//    	properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-//		properties.put("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
-//		properties.put("hibernate.connection.url", "jdbc:mysql://localhost:3306/filedb?serverTimezone=Europe/Moscow");
-//		properties.put("hibernate.connection.username", "root");
-//		properties.put("hibernate.connection.password", "241299");
-//		properties.put("hibernate.current_session_context_class", "org.springframework.orm.hibernate5.SpringSessionContext");
-//    	return properties;
-//    }
 
 	@Autowired
 	@Bean(name = "sessionFactory")
@@ -67,20 +56,18 @@ public class ApplicationContextConfig {
 
 		LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
 
-		// Package contain entity classes
+        factoryBean.setAnnotatedClasses(FileEntity.class);
 		factoryBean.setDataSource(dataSource);
 		factoryBean.setHibernateProperties(properties);
 		factoryBean.afterPropertiesSet();
-		//
+
 		return factoryBean.getObject();
 	}
 
     @Autowired
 	@Bean(name = "transactionManager" )
 	public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory)	{
-    	HibernateTransactionManager transactionManager
-			= new HibernateTransactionManager(sessionFactory);
-		return transactionManager;
+		return new HibernateTransactionManager(sessionFactory);
 	}
 
     @Bean(name = "multipartResolver")
