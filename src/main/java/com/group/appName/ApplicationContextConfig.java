@@ -17,6 +17,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
@@ -36,33 +37,30 @@ public class ApplicationContextConfig {
 	@Bean(name = "dataSource")
 	public DataSource getDataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-
 		dataSource.setUrl(environment.getProperty("spring.datasource.url"));
 		dataSource.setUsername(environment.getProperty("spring.datasource.username"));
 		dataSource.setPassword(environment.getProperty("spring.datasource.password"));
 		return dataSource;
 	}
 
-	@Autowired
-	@Bean(name = "sessionFactory")
-	public SessionFactory getSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
-		Properties properties = new Properties();
+    private Properties getHibernateProperties() {
+    	Properties properties = new Properties();
+    	properties.put("hibernate.show_sql", "true");
+    	properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+		properties.put("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
+    	return properties;
+    }
 
-		// See: application.properties
-		properties.put("hibernate.dialect", environment.getProperty("spring.jpa.properties.hibernate.dialect"));
-		properties.put("hibernate.show_sql", environment.getProperty("spring.jpa.show-sql"));
-		properties.put("current_session_context_class", //
-				environment.getProperty("spring.jpa.properties.hibernate.current_session_context_class"));
 
-		LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
-
-        factoryBean.setAnnotatedClasses(FileEntity.class);
-		factoryBean.setDataSource(dataSource);
-		factoryBean.setHibernateProperties(properties);
-		factoryBean.afterPropertiesSet();
-
-		return factoryBean.getObject();
-	}
+    @Bean(name = "sessionFactory")
+    public SessionFactory sessionFactory(@Qualifier("dataSource") DataSource dataSource) throws IOException {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setAnnotatedClasses(FileEntity.class);
+        sessionFactory.setDataSource(dataSource);
+		sessionFactory.setHibernateProperties(getHibernateProperties());
+		sessionFactory.afterPropertiesSet();
+        return sessionFactory.getObject();
+    }
 
     @Autowired
 	@Bean(name = "transactionManager" )

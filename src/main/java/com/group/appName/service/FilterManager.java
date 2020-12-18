@@ -8,7 +8,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 import java.util.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class FilterManager {
@@ -16,27 +19,32 @@ public class FilterManager {
     @Autowired
     private FireService fireService;
 
-    public String filteringByAllSelectedFilters (String fileName, String allSelectedFilters){
+    public String filteringByAllSelectedFilters (String fileName, String allFilters) throws IOException {
         JSONArray listOfAlarms = convertFileDataFromStringToJSONArray(fileName); //Get list of cases that fireBrigade
-                                                                                 //responded to. 1 case = 1 table row
+        ObjectMapper mapper = new ObjectMapper();                                                        //responded to. 1 case = 1 table row
 
-        JSONObject jsonObjectWithAllSelectedFilters = new JSONObject //There are (In this object) keys (selected
-                (allSelectedFilters);                                //table columns) and selected values in this column).
+        HashMap map = (HashMap) mapper.readValue(allFilters, Map.class);
+
+        JSONObject jsonObjectWithAllSelectedFilters = new JSONObject(map);//There are (In this object) keys (selected
+
+
+                                                                           //table columns) and selected values in this column).
 
         ArrayList<String> selectedFilterCategories = new ArrayList<>//Table columns which was selected as filters by user.
                 (jsonObjectWithAllSelectedFilters.keySet());        //1 column = 1 category
         JSONArray filteredListOfAlarms = filteringByOneCategory
-                (selectedFilterCategories, listOfAlarms, allSelectedFilters);
+                (selectedFilterCategories, listOfAlarms, allFilters);
+
 
         return filteredListOfAlarms.toString();
     }
 
     private JSONArray filteringByOneCategory (ArrayList<String> selectedFilterCategories, //Go thought the list of
             JSONArray listOfAlarms, String allSelectedFilters) {                          //categories and send each
-                                                                                          //category to
+                                                                              //category to
                                                                          //filteringByEachFilterFromOneCategory method
         for (String filtersCategory : selectedFilterCategories) {                         //to get finally filtered list
-            ArrayList<JSONObject> finalArray = filteringByEachFilterFromOneCategory       //from them.
+            ArrayList<JSONObject> finalArray = filteringByEachFilterFromOneCategory       //from it.
                     (listOfAlarms, allSelectedFilters, filtersCategory);
             listOfAlarms = new JSONArray(finalArray);
         }
@@ -71,10 +79,12 @@ public class FilterManager {
                         filteredList.add(listOfAlarms.getJSONObject(i));
                     }
                 }
+
                 return filteredList;
     }
 
-    private List<String> getFiltersListFromOneCategory (String allSelectedFilters, String filtersCategory) { //Get list of selected filters
+    private List<String> getFiltersListFromOneCategory (String allSelectedFilters, String filtersCategory) {
+        //Get list of selected filters
         JsonObject jsonObjectWithAllFilters = new Gson().fromJson(allSelectedFilters, JsonObject.class);     //which belong to the passed category.
         JsonArray arrayOfFilters = makeArrayOfFilters(jsonObjectWithAllFilters, filtersCategory);
         String[] array = new Gson().fromJson(arrayOfFilters, String[].class);
@@ -93,4 +103,3 @@ public class FilterManager {
         return arrayOfFilters;
     }
 }
-

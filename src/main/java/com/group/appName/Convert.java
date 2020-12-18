@@ -41,29 +41,47 @@ public class Convert {
         FileInputStream excelFile = new FileInputStream(new File(filePath));
         return getListOfFires(filePath, excelFile);
     }
-
-    private static Workbook createWorkbook (String filePath) {
-        Workbook workbook = null;
-        if (getExtension(filePath).equals("xlsx")){
-            workbook = new XSSFWorkbook();
-        } else if
-         (getExtension(filePath).equals("xls")){
-            workbook = new HSSFWorkbook();
-        }
-
-        return workbook;
-    }
-
-    private static List<Fire> getListOfFires (String filePath, FileInputStream excelFile) throws IOException
-    {
-        Workbook workbook = createWorkbook(filePath);
-        Sheet sheet = workbook.getSheet("Таблица по выездам");
-        int lastRowIndex = sheet.getLastRowNum();
+    private static List<Fire> getListOfFires (String filePath, FileInputStream excelFile) throws IOException {
+        if (getExtension(filePath).equals("xlsx")) {
+            Workbook workbook = new XSSFWorkbook(excelFile);
+            Sheet sheet = workbook.getSheet("Таблица по выездам");
+            int lastRowIndex = sheet.getLastRowNum();
             List<Fire> listFires = readRows(lastRowIndex, sheet);
             workbook.close();
             return listFires;
-
+        } else if(getExtension(filePath).equals("xls")){
+            Workbook workbook = new HSSFWorkbook(excelFile);
+            Sheet sheet = workbook.getSheet("Таблица по выездам");
+            int lastRowIndex = sheet.getLastRowNum();
+            List<Fire> listFires = readRows(lastRowIndex, sheet);
+            workbook.close();
+            return listFires;
+        } else {
+            return null;
+        }
     }
+
+    //    private static Workbook createWorkbook (String filePath) {
+//        Workbook workbook = null;
+//        if (getExtension(filePath).equals("xlsx")){
+//            workbook = new XSSFWorkbook();
+//        } else if
+//         (getExtension(filePath).equals("xls")){
+//            workbook = new HSSFWorkbook();
+//        }
+//
+//        return workbook;
+//    }
+//
+//    private static List<Fire> getListOfFires (String filePath, FileInputStream excelFile) throws IOException
+//    {
+//        Workbook workbook = createWorkbook(filePath);
+//        Sheet sheet = workbook.getSheet("Таблица по выездам");
+//        int lastRowIndex = sheet.getLastRowNum();
+//            List<Fire> listFires = readRows(lastRowIndex, sheet);
+//            workbook.close();
+//            return listFires;
+//    }
     private static List<Fire> readRows(int lastRowIndex, final Sheet sheet){
         List <Fire> firesList = new ArrayList<Fire>();
 

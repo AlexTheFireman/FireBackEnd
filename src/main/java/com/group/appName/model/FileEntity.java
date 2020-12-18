@@ -27,6 +27,5 @@ public class FileEntity {
     public void setFileData(Byte [] fileData) {
         this.fileData = fileData;
     }
-
 }
 
