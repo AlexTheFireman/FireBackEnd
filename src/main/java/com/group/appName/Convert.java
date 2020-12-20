@@ -2,6 +2,7 @@ package com.group.appName;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.group.appName.model.FileEntity;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -14,6 +15,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,8 +41,7 @@ public class Convert {
         FileInputStream excelFile = new FileInputStream(new File(filePath));
         return getListOfFires(filePath, excelFile);
     }
-    private static List<Fire> getListOfFires (String filePath, FileInputStream excelFile) throws IOException
-    {
+    private static List<Fire> getListOfFires (String filePath, FileInputStream excelFile) throws IOException {
         if (getExtension(filePath).equals("xlsx")) {
             Workbook workbook = new XSSFWorkbook(excelFile);
             Sheet sheet = workbook.getSheet("Таблица по выездам");
@@ -58,6 +60,28 @@ public class Convert {
             return null;
         }
     }
+
+    //    private static Workbook createWorkbook (String filePath) {
+//        Workbook workbook = null;
+//        if (getExtension(filePath).equals("xlsx")){
+//            workbook = new XSSFWorkbook();
+//        } else if
+//         (getExtension(filePath).equals("xls")){
+//            workbook = new HSSFWorkbook();
+//        }
+//
+//        return workbook;
+//    }
+//
+//    private static List<Fire> getListOfFires (String filePath, FileInputStream excelFile) throws IOException
+//    {
+//        Workbook workbook = createWorkbook(filePath);
+//        Sheet sheet = workbook.getSheet("Таблица по выездам");
+//        int lastRowIndex = sheet.getLastRowNum();
+//            List<Fire> listFires = readRows(lastRowIndex, sheet);
+//            workbook.close();
+//            return listFires;
+//    }
     private static List<Fire> readRows(int lastRowIndex, final Sheet sheet){
         List <Fire> firesList = new ArrayList<Fire>();
 
@@ -185,6 +209,25 @@ public class Convert {
                 break;
         }
         return result;
+    }
+
+    public static Byte[] convertFromJsonToBytesArrayWrapper(String jsonString) throws UnsupportedEncodingException {
+        byte[] bytes = jsonString.getBytes("utf-8");
+        Byte[] bytesWrapArray = new Byte[bytes.length];
+        int i = 0;
+        for(byte b : bytes){
+            bytesWrapArray[i++] = b;
+        }
+        return bytesWrapArray;
+    }
+
+    public static String convertFromBytesWrapArrayToString(Byte[] bytesWrapArray){
+        byte[] bytes = new byte[bytesWrapArray.length];
+        int i=0;
+        for(Byte b: bytesWrapArray) {
+            bytes[i++] = b.byteValue();
+        }
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }
 

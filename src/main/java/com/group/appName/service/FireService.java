@@ -2,40 +2,48 @@ package com.group.appName.service;
 
 import com.group.appName.Convert;
 import com.group.appName.model.FileEntity;
+
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
+
 import java.util.List;
 
+import static org.apache.commons.io.FilenameUtils.getExtension;
+
+@EnableAutoConfiguration
+@EnableTransactionManagement
 @Service
 public class FireService {
-    private static SessionFactory sessionFactory = new Configuration()
-            .configure("hibernate.cfg.xml")
-            .addAnnotatedClass(FileEntity.class)
-            .buildSessionFactory();
 
-    static void addNewFile(File file) throws IOException, IllegalStateException, NullPointerException {
+    @Autowired
+    SessionFactory sessionFactory;
+
+    @Transactional
+    public void addNewFile(File file) throws IOException, IllegalStateException, NullPointerException {
         Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
-        FileEntity obj = new FileEntity();
-        String s = Convert.convertToJsonString(file.getPath());
+        FileEntity object = new FileEntity();
+        String dataAsJSON = Convert.convertToJsonString(file.getPath());
+        Byte[] arrayOfBytesWrapper = Convert.convertFromJsonToBytesArrayWrapper(dataAsJSON);
         String name = file.getName();
-        obj.setFileName(name);
-        obj.setFileData(s);
-        session.save(obj);
-        session.getTransaction()
-                .commit();
+        object.setFileName(name);
+        object.setFileData(arrayOfBytesWrapper);
+        session.save(object);
     }
 
+    @Transactional
     public String getFile(String fileName) {
         FileEntity obj = null;
         Session session = sessionFactory.getCurrentSession();
         try {
-            session.beginTransaction();
             obj = session.get(FileEntity.class, fileName);
         } catch (Exception sqlException) {
             if (null != session.getTransaction()) {
@@ -43,37 +51,54 @@ public class FireService {
                 session.getTransaction()
                         .rollback();
             }
-        } finally {
-            if (session != null) {
-                session.close();
-            }
         }
         if (obj != null) {
-            return obj.getFileData();
+            return Convert.convertFromBytesWrapArrayToString(obj.getFileData());
         }
         return null;
     }
-
+    @Transactional
     public void deleteFile (String fileName) {
         Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
         System.out.println("File name = " + fileName);
         session.createQuery("DELETE FROM FileEntity WHERE fileName = :fileName")
                 .setParameter("fileName", fileName)
                 .executeUpdate();
-        session.close();
     }
-    public static List getAll() {
+
+    @Transactional
+    public List getAll() {
         Session session = sessionFactory.getCurrentSession();
-        session.beginTransaction();
         List list = session.createQuery("SELECT FE.fileName FROM FileEntity AS FE ")
                 .list();
-
-        if (session != null) {
-            session.close();
-        }
         return list;
     }
+    @Transactional
+    public Enum<DownloadStatus> checkFileNameBeforeUploadToDB (File fileName) throws IOException {
+        String fileExtension = getExtension(fileName.getPath());
+        if ((fileExtension.equals("xlsx")) || (fileExtension.equals("xls"))) {
+            if (isFileNameExistInList(getAll(), fileName)) {
+                return DownloadStatus.FILE_ALREADY_EXIST;
+            } else {
+
+                addNewFile(fileName);
+                return DownloadStatus.SUCCESS;
+            }
+        } else {
+            return DownloadStatus.CHECK_FILE_EXTENSION;
+        }
+    }
+    @Transactional
+    boolean isFileNameExistInList(List<String> fileList, File fileName) {
+        for (String s : fileList) {
+
+            if (s.equalsIgnoreCase(fileName.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
 

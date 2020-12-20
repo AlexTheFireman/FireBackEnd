@@ -8,7 +8,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 import java.util.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class FilterManager {
@@ -16,63 +19,87 @@ public class FilterManager {
     @Autowired
     private FireService fireService;
 
-    public String filterByParams (String fileName, String params){
-        JSONArray dataFromFile = getDataFromFile(fileName);
-        JSONObject jsonObject = new JSONObject(params);
-        ArrayList<String> filterFields = new ArrayList<>(jsonObject.keySet());
+    public String filteringByAllSelectedFilters (String fileName, String allFilters) throws IOException {
+        JSONArray listOfAlarms = convertFileDataFromStringToJSONArray(fileName); //Get list of cases that fireBrigade
+        ObjectMapper mapper = new ObjectMapper();                                                        //responded to. 1 case = 1 table row
 
-        for (String f : filterFields) {
-            ArrayList<JSONObject> finalArray = filterByField(dataFromFile, params, f);
-            dataFromFile = new JSONArray(finalArray);
-        }
-        return dataFromFile.toString();
+        HashMap map = (HashMap) mapper.readValue(allFilters, Map.class);
+
+        JSONObject jsonObjectWithAllSelectedFilters = new JSONObject(map);//There are (In this object) keys (selected
+
+
+                                                                           //table columns) and selected values in this column).
+
+        ArrayList<String> selectedFilterCategories = new ArrayList<>//Table columns which was selected as filters by user.
+                (jsonObjectWithAllSelectedFilters.keySet());        //1 column = 1 category
+        JSONArray filteredListOfAlarms = filteringByOneCategory
+                (selectedFilterCategories, listOfAlarms, allFilters);
+
+
+        return filteredListOfAlarms.toString();
     }
 
-    private JSONArray getDataFromFile(String fileName) {
+    private JSONArray filteringByOneCategory (ArrayList<String> selectedFilterCategories, //Go thought the list of
+            JSONArray listOfAlarms, String allSelectedFilters) {                          //categories and send each
+                                                                              //category to
+                                                                         //filteringByEachFilterFromOneCategory method
+        for (String filtersCategory : selectedFilterCategories) {                         //to get finally filtered list
+            ArrayList<JSONObject> finalArray = filteringByEachFilterFromOneCategory       //from it.
+                    (listOfAlarms, allSelectedFilters, filtersCategory);
+            listOfAlarms = new JSONArray(finalArray);
+        }
+        return listOfAlarms;
+    }
+
+    private JSONArray convertFileDataFromStringToJSONArray(String fileName) {
         String data = fireService.getFile(fileName);
         return new JSONArray(data);
     }
 
-    private ArrayList<JSONObject> filterByField (JSONArray dataFromDB, String params, String filterField) {
-        ArrayList<JSONObject> filteredList = new ArrayList<>();
-        List<String> filterFieldList = getFieldList(params, filterField);
-        if(filterFieldList.size() > 0) {
-            for (String f : filterFieldList) {
-                for (int m = 0; m < dataFromDB.length(); m++) {
-                    JSONObject obj = dataFromDB.getJSONObject(m);
-                    String StringFromBD = obj.getString(filterField);
-                    if (StringFromBD.equals(f)) {
-                        if (!filteredList.contains(obj)) {
-                            filteredList.add(obj);
+    private ArrayList<JSONObject> filteringByEachFilterFromOneCategory                    //Go thought all table rows and
+            (JSONArray listOfAlarms, String allSelectedFilters, String filtersCategory) { //add alarm (row) to the returned
+                                                                                          //list only if finds value
+                ArrayList<JSONObject> filteredList = new ArrayList<>();                   //that equals to passed filter.
+                List<String> filtersListFromOneCategory = getFiltersListFromOneCategory
+                                                (allSelectedFilters, filtersCategory);
+                if(filtersListFromOneCategory.size() > 0) {
+                    for (String oneFilter : filtersListFromOneCategory) {
+                        for (int m = 0; m < listOfAlarms.length(); m++) {
+                            JSONObject oneAlarm = listOfAlarms.getJSONObject(m);
+                            String cellFromTableRow = oneAlarm.getString(filtersCategory);
+                            if (cellFromTableRow.equals(oneFilter)) {
+                                if (!filteredList.contains(oneAlarm)) {
+                                    filteredList.add(oneAlarm);
+                                }
+                            }
                         }
                     }
+                } else {
+                    for(int i = 0; i < listOfAlarms.length(); i++){
+                        filteredList.add(listOfAlarms.getJSONObject(i));
+                    }
                 }
-            }
-        } else {
-            for(int i = 0; i < dataFromDB.length(); i++){
-                filteredList.add(dataFromDB.getJSONObject(i));
-            }
-        }
-        return filteredList;
+
+                return filteredList;
     }
 
-    private List<String> getFieldList(String params, String filterField) {
-        JsonObject jsonObject = new Gson().fromJson(params, JsonObject.class);
-        JsonArray jsonArray = isArray(jsonObject, filterField);
-        String[] array = new Gson().fromJson(jsonArray, String[].class);
+    private List<String> getFiltersListFromOneCategory (String allSelectedFilters, String filtersCategory) {
+        //Get list of selected filters
+        JsonObject jsonObjectWithAllFilters = new Gson().fromJson(allSelectedFilters, JsonObject.class);     //which belong to the passed category.
+        JsonArray arrayOfFilters = makeArrayOfFilters(jsonObjectWithAllFilters, filtersCategory);
+        String[] array = new Gson().fromJson(arrayOfFilters, String[].class);
         return Arrays.asList(array);
     }
 
-    private JsonArray isArray(JsonObject jsonObject, String filterField){
-        JsonArray jsonArray = new JsonArray();
-        JsonElement element = jsonObject.get(filterField);
-        if (!element.isJsonArray()){
-            String s = element.getAsString();
-            jsonArray.add(s);
+    private JsonArray makeArrayOfFilters(JsonObject jsonObjectWithAllFilters, String filtersCategory){   //Check whether user
+        JsonArray arrayOfFilters = new JsonArray();                                                      //has selected more than one
+        JsonElement element = jsonObjectWithAllFilters.get(filtersCategory);                             //filter in passed category.
+        if (!element.isJsonArray()){                                                                     //And make array of filters
+            String oneFilter = element.getAsString();                                                    //according to it from passed
+            arrayOfFilters.add(oneFilter);                                                               //jsonObject.
         } else {
-            jsonArray = jsonObject.getAsJsonArray(filterField);
+            arrayOfFilters = jsonObjectWithAllFilters.getAsJsonArray(filtersCategory);
         }
-        return jsonArray;
+        return arrayOfFilters;
     }
 }
-

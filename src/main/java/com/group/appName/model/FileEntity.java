@@ -1,6 +1,5 @@
 package com.group.appName.model;
 
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,7 +9,7 @@ import javax.persistence.Table;
 @Table(name ="files_upload")
 public class FileEntity {
     private String fileName;
-    private String fileData;
+    private Byte[] fileData;
 
     @Id
     @Column(name = "file_name")
@@ -22,12 +21,11 @@ public class FileEntity {
     }
 
     @Column(name = "file_data")
-    public String getFileData() {
+    public Byte [] getFileData() {
         return fileData;
     }
-    public void setFileData(String fileData) {
+    public void setFileData(Byte [] fileData) {
         this.fileData = fileData;
     }
-
 }
 

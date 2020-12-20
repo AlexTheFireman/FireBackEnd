@@ -1,38 +1,39 @@
-package com.group.appName.service;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import static org.apache.commons.io.FilenameUtils.getExtension;
-
-
-public class CheckFileNameForDB {
-
-       public static String checkFileNameBeforeUploadToDB (File fileName) throws IOException {
-           if (fileName != null) {
-               if ((getExtension(fileName.getPath()).equals("xlsx")) || (getExtension(fileName.getPath()).equals("xls"))) {
-                   if (isFileNameExistInList(FireService.getAll(), fileName)) {
-                       return "FileAlreadyHas";
-                   } else {
-                       FireService.addNewFile(fileName);
-                       return "Success";
-                   }
-               } else {
-                   return "Check";
-               }
-           } else {
-               return "Null";
-           }
-    }
-    private static boolean isFileNameExistInList(List<String> fileList, File fileName) {
-        for (String s : fileList) {
-
-            if (s.equals(fileName.getName())) {
-                return true;
-            }
-        }
-        return false;
-    }
-}
+//package com.group.appName.service;
+//
+//import java.io.File;
+//import java.io.IOException;
+//import java.util.List;
+//
+//import static org.apache.commons.io.FilenameUtils.getExtension;
+//
+//
+//public class CheckFileNameForDB {
+//
+//
+//       public static Enum<DownloadStatus> checkFileNameBeforeUploadToDB (File fileName) throws IOException {
+//           String fileExtension = getExtension(fileName.getPath());
+//           FireService fireService = new FireService();
+//           if ((fileExtension.equals("xlsx")) || (fileExtension.equals("xls"))) {
+//               if (isFileNameExistInList(fireService.getAll(), fileName)) {
+//                   return DownloadStatus.FILE_ALREADY_EXIST;
+//               } else {
+//
+//                   fireService.addNewFile(fileName);
+//                   return DownloadStatus.SUCCESS;
+//               }
+//           } else {
+//               return DownloadStatus.CHECK_FILE_EXTENSION;
+//           }
+//       }
+//
+//    private static boolean isFileNameExistInList(List<String> fileList, File fileName) {
+//        for (String s : fileList) {
+//
+//            if (s.equalsIgnoreCase(fileName.getName())) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//}
 
