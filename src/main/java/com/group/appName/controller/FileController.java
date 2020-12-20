@@ -66,5 +66,11 @@ public class FileController {
     public List getFileList() {
         return fireService.getAll();
     }
+
+    @RequestMapping(value = "/api/get/some", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public String getSome() {
+        return "It works";
+    }
 }
 
