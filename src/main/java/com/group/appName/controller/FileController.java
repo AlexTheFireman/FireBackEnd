@@ -61,7 +61,7 @@ public class FileController {
         return filterManager.filteringByAllSelectedFilters(fileName, params);
     }
 
-    @CrossOrigin
+    @CrossOrigin(origins = "https://front-for-app.herokuapp.com")
     @RequestMapping(value = "/api/get/all", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public List getFileList() {
