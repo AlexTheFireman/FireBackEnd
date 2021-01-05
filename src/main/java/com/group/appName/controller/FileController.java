@@ -61,6 +61,7 @@ public class FileController {
         return filterManager.filteringByAllSelectedFilters(fileName, params);
     }
 
+    @CrossOrigin
     @RequestMapping(value = "/api/get/all", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public List getFileList() {
