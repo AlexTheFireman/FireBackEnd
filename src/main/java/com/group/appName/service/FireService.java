@@ -66,11 +66,6 @@ public class FireService {
                 .executeUpdate();
     }
 
-    public void deleteAll () {
-        Session session = sessionFactory.getCurrentSession();
-        session.createQuery("DELETE FROM FileEntity").executeUpdate();
-    }
-
     public List getAll() {
         Session session = sessionFactory.getCurrentSession();
         List list = session.createQuery("SELECT FE.fileName FROM FileEntity AS FE ")
