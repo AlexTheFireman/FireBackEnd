@@ -25,7 +25,6 @@ public class FileController {
     @Autowired
     private FilterManager filterManager;
 
-
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
     @ResponseBody
     public Enum uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException, NullPointerException {
@@ -61,7 +60,7 @@ public class FileController {
         return filterManager.filteringByAllSelectedFilters(fileName, params);
     }
 
-    @CrossOrigin(origins = "https://front-for-app.herokuapp.com")
+    @CrossOrigin(origins="*")
     @RequestMapping(value = "/api/get/all", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public List getFileList() {
