@@ -21,13 +21,14 @@ import static org.apache.commons.io.FilenameUtils.getExtension;
 
 @EnableAutoConfiguration
 @EnableTransactionManagement
+@Transactional
 @Service
 public class FireService {
 
     @Autowired
     SessionFactory sessionFactory;
 
-    @Transactional
+
     public void addNewFile(File file) throws IOException, IllegalStateException, NullPointerException {
         Session session = sessionFactory.getCurrentSession();
         FileEntity object = new FileEntity();
@@ -39,7 +40,7 @@ public class FireService {
         session.save(object);
     }
 
-    @Transactional
+
     public String getFile(String fileName) {
         FileEntity obj = null;
         Session session = sessionFactory.getCurrentSession();
@@ -57,23 +58,26 @@ public class FireService {
         }
         return null;
     }
-    @Transactional
+
     public void deleteFile (String fileName) {
         Session session = sessionFactory.getCurrentSession();
-        System.out.println("File name = " + fileName);
         session.createQuery("DELETE FROM FileEntity WHERE fileName = :fileName")
                 .setParameter("fileName", fileName)
                 .executeUpdate();
     }
 
-    @Transactional
+    public void deleteAll () {
+        Session session = sessionFactory.getCurrentSession();
+        session.createQuery("DELETE FROM FileEntity").executeUpdate();
+    }
+
     public List getAll() {
         Session session = sessionFactory.getCurrentSession();
         List list = session.createQuery("SELECT FE.fileName FROM FileEntity AS FE ")
                 .list();
         return list;
     }
-    @Transactional
+
     public Enum<DownloadStatus> checkFileNameBeforeUploadToDB (File fileName) throws IOException {
         String fileExtension = getExtension(fileName.getPath());
         if ((fileExtension.equals("xlsx")) || (fileExtension.equals("xls"))) {
@@ -88,7 +92,7 @@ public class FireService {
             return DownloadStatus.CHECK_FILE_EXTENSION;
         }
     }
-    @Transactional
+
     boolean isFileNameExistInList(List<String> fileList, File fileName) {
         for (String s : fileList) {
 

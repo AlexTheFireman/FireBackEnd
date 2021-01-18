@@ -53,6 +53,10 @@ public class FileController {
         fireService.deleteFile(fileName);
     }
 
+    @RequestMapping(value = "/api/delete/all", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void deleteAll() {fireService.deleteAll();}
+
     @RequestMapping(value = "/api/get/{fileName}", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
     @ResponseBody
