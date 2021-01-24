@@ -1,8 +1,7 @@
 package com.group.appName.service;
 
 public enum DownloadStatus {
-    FILE_ALREADY_EXIST,
+    FILE_ALREADY_EXISTS,
     SUCCESS,
-    CHECK_FILE_EXTENSION,
-    NO_FILE_SELECTED
+    CHECK_FILE_EXTENSION;
 }

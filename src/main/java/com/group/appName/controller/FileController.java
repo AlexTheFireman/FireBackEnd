@@ -27,7 +27,7 @@ public class FileController {
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
     @ResponseBody
-    public Enum uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException, NullPointerException {
+    public String uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException, NullPointerException {
         File file = convertFromMultipartToFile(multiPartFile);
         return fireService.checkFileNameBeforeUploadToDB(file);
     }
