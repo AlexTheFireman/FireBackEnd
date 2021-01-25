@@ -3,22 +3,19 @@
 //import java.io.File;
 //import java.io.IOException;
 //import java.util.List;
-//
 //import static org.apache.commons.io.FilenameUtils.getExtension;
-//
 //
 //public class CheckFileNameForDB {
 //
-//
 //       public static Enum<DownloadStatus> checkFileNameBeforeUploadToDB (File fileName) throws IOException {
 //           String fileExtension = getExtension(fileName.getPath());
-//           FireService fireService = new FireService();
+//           FireService service = new FireService();
 //           if ((fileExtension.equals("xlsx")) || (fileExtension.equals("xls"))) {
-//               if (isFileNameExistInList(fireService.getAll(), fileName)) {
+//               if (isFileNameExistInList(service.getAll(), fileName)) {
 //                   return DownloadStatus.FILE_ALREADY_EXIST;
 //               } else {
 //
-//                   fireService.addNewFile(fileName);
+//                   service.addNewFile(fileName);
 //                   return DownloadStatus.SUCCESS;
 //               }
 //           } else {
