@@ -1,5 +1,6 @@
 package com.group.appName.controller;
 
+import com.group.appName.service.DownloadStatus;
 import com.group.appName.service.FireService;
 import com.group.appName.service.FilterManager;
 import org.json.JSONException;
@@ -27,7 +28,7 @@ public class FileController {
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
     @ResponseBody
-    public String uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException, NullPointerException {
+    public Enum<DownloadStatus> uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException, NullPointerException {
         File file = convertFromMultipartToFile(multiPartFile);
         return fireService.checkFileNameBeforeUploadToDB(file);
     }

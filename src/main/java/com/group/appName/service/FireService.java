@@ -73,31 +73,29 @@ public class FireService {
         return list;
     }
 
-    public String checkFileNameBeforeUploadToDB (File fileName) throws IOException {
+    public Enum<DownloadStatus> checkFileNameBeforeUploadToDB (File fileName) throws IOException {
         String fileExtension = getExtension(fileName.getPath());
         if ((fileExtension.equals("xlsx")) || (fileExtension.equals("xls"))) {
             if (isFileNameExistInList(getAll(), fileName)) {
-                return DownloadStatus.FILE_ALREADY_EXISTS.toString();
+                return DownloadStatus.FILE_ALREADY_EXISTS;
             } else {
 
                 addNewFile(fileName);
-                return DownloadStatus.SUCCESS.toString();
+                return DownloadStatus.SUCCESS;
             }
         } else {
-            return DownloadStatus.CHECK_FILE_EXTENSION.toString();
+            return DownloadStatus.CHECK_FILE_EXTENSION;
         }
     }
 
     boolean isFileNameExistInList(List<String> fileList, File fileName) {
         for (String s : fileList) {
-
             if (s.equalsIgnoreCase(fileName.getName())) {
                 return true;
             }
         }
         return false;
     }
-
 }
 
 
