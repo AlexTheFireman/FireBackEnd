@@ -1,5 +1,6 @@
 package com.group.appName.controller;
 
+import com.group.appName.service.CheckFileNameForDB;
 import com.group.appName.service.DownloadStatus;
 import com.group.appName.service.FireService;
 import com.group.appName.service.FilterManager;
@@ -27,10 +28,9 @@ public class FileController {
     private FilterManager filterManager;
 
     @RequestMapping(value = "/api/upload", method = RequestMethod.POST)
-    @ResponseBody
     public Enum<DownloadStatus> uploadFile(@RequestParam("file") MultipartFile multiPartFile) throws IOException, JSONException, NullPointerException {
         File file = convertFromMultipartToFile(multiPartFile);
-        return fireService.checkFileNameBeforeUploadToDB(file);
+        return CheckFileNameForDB.checkFileNameBeforeUploadToDB(file);
     }
 
     private File convertFromMultipartToFile(MultipartFile file) throws IOException {
@@ -43,27 +43,23 @@ public class FileController {
     }
 
     @RequestMapping(value = "/api/get/{fileName}", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
     public String getFile(@PathVariable String fileName) {
         return fireService.getFile(fileName);
     }
 
     @RequestMapping(value = "/api/delete/{fileName}", method = RequestMethod.DELETE)
-    @ResponseBody
     public void deleteFile(@PathVariable String fileName) {
         fireService.deleteFile(fileName);
     }
 
     @RequestMapping(value = "/api/get/{fileName}", method = RequestMethod.POST, produces = "application/json",
                     consumes = "application/json")
-    @ResponseBody
     public String getDataFromFile(@PathVariable String fileName, @RequestBody String params) throws IOException {
         return filterManager.filteringByAllSelectedFilters(fileName, params);
     }
 
     @CrossOrigin(origins="*")
     @RequestMapping(value = "/api/get/all", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
     public List getFileList() {
         return fireService.getAll();
     }

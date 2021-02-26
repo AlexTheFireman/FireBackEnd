@@ -23,6 +23,7 @@ import java.util.Properties;
 @Configuration
 @ComponentScan("com.group.appName")
 @EnableTransactionManagement
+
 @PropertySource("classpath:application.properties")
 public class ApplicationContextConfig {
 
