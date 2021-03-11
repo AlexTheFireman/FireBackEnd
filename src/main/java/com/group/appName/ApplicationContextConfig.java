@@ -1,9 +1,10 @@
 package com.group.appName;
 
-import com.group.appName.model.FileEntity;
+import com.group.appName.models.FileEntity;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -20,10 +21,9 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Properties;
 
-@Configuration
+@TestConfiguration
 @ComponentScan("com.group.appName")
 @EnableTransactionManagement
-
 @PropertySource("classpath:application.properties")
 public class ApplicationContextConfig {
 
@@ -51,7 +51,6 @@ public class ApplicationContextConfig {
 		properties.put("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
     	return properties;
     }
-
 
     @Bean(name = "sessionFactory")
     public SessionFactory sessionFactory(@Qualifier("dataSource") DataSource dataSource) throws IOException {
