@@ -16,7 +16,7 @@ import static com.group.appName.utils.FileUtils.convertFromMultipartToFile;
 import static com.group.appName.utils.FileUtils.checkFileExtensionBeforeUploadToDB;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/file")
 public class FileController {
 
     @Autowired
