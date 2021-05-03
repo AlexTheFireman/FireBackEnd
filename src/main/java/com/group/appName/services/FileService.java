@@ -1,6 +1,6 @@
 package com.group.appName.services;
 
-import com.group.appName.repositorie.FileRepository;
+import com.group.appName.repository.FileRepository;
 import com.group.appName.enums.DownloadStatus;
 import com.group.appName.utils.FileConverter;
 import com.group.appName.model.FileEntity;

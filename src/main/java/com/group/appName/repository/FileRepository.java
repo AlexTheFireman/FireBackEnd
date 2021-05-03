@@ -1,4 +1,4 @@
-package com.group.appName.repositorie;
+package com.group.appName.repository;
 
 import com.group.appName.model.FileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.group.appName.repositorie;
+package com.group.appName.repository;
 
 import com.group.FileTestConfiguration;
 import com.group.appName.AppNameApplication;

@@ -30,23 +30,23 @@ public class FileController {
         return fileService.addNewFileIfNotExists(file);
     }
 
-    @GetMapping(value = "/get/{fileName}", produces = "application/json")
+    @GetMapping(value = "/file/get/{fileName}", produces = "application/json")
     public String getFile(@PathVariable String fileName) {
         return fileService.getFile(fileName);
     }
 
-    @DeleteMapping(value = "/delete/{fileName}")
+    @DeleteMapping(value = "/file/delete/{fileName}")
     public void deleteFile(@PathVariable String fileName) {
         fileService.deleteFile(fileName);
     }
 
-    @PostMapping(value = "/get/{fileName}", produces = "application/json",
+    @PostMapping(value = "/file/get/{fileName}", produces = "application/json",
             consumes = "application/json")
     public String getDataFromFile(@PathVariable String fileName, @RequestBody String params) throws IOException {
         return filterManager.filteringByAllSelectedFilters(fileName, params);
     }
 
-    @GetMapping(value = "/get/all", produces = "application/json")
+    @GetMapping(value = "/get/file/all", produces = "application/json")
     public List getFileList() {
         return fileService.getAll();
     }
