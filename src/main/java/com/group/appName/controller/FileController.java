@@ -46,7 +46,7 @@ public class FileController {
         return filterManager.filteringByAllSelectedFilters(fileName, params);
     }
 
-    @GetMapping(value = "/get/file/all", produces = "application/json")
+    @GetMapping(value = "/file/get/all", produces = "application/json")
     public List getFileList() {
         return fileService.getAll();
     }
