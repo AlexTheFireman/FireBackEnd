@@ -1,8 +1,8 @@
-package com.group.appName.repositories;
+package com.group.appName.repositorie;
 
 import com.group.FileTestConfiguration;
 import com.group.appName.AppNameApplication;
-import com.group.appName.models.FileEntity;
+import com.group.appName.model.FileEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,9 +1,9 @@
 package com.group.appName.services;
 
-import com.group.appName.repositories.FileRepository;
+import com.group.appName.repositorie.FileRepository;
 import com.group.appName.enums.DownloadStatus;
 import com.group.appName.utils.FileConverter;
-import com.group.appName.models.FileEntity;
+import com.group.appName.model.FileEntity;
 
 import com.group.appName.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;

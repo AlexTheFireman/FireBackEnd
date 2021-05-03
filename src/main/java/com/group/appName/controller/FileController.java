@@ -1,4 +1,4 @@
-package com.group.appName.controllers;
+package com.group.appName.controller;
 
 import com.group.appName.enums.DownloadStatus;
 import com.group.appName.services.FileService;
@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.group.appName.utils.FileUtils.convertFromMultipartToFile;
-import static com.group.appName.utils.FileUtils.checkFileExtensionBeforeUploadToDB;
 
 @RestController
 @RequestMapping("/api/file")
@@ -42,7 +41,7 @@ public class FileController {
     }
 
     @PostMapping(value = "/get/{fileName}", produces = "application/json",
-                    consumes = "application/json")
+            consumes = "application/json")
     public String getDataFromFile(@PathVariable String fileName, @RequestBody String params) throws IOException {
         return filterManager.filteringByAllSelectedFilters(fileName, params);
     }

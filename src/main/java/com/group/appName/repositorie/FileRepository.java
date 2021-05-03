@@ -1,6 +1,6 @@
-package com.group.appName.repositories;
+package com.group.appName.repositorie;
 
-import com.group.appName.models.FileEntity;
+import com.group.appName.model.FileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

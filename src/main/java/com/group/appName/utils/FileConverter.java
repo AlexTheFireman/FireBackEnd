@@ -34,26 +34,26 @@ public class FileConverter {
         }
         return null;
     }
+
     private static List<FileDto> readExcelFile(final String filePath) throws IOException {
         FileInputStream excelFile = new FileInputStream(new File(filePath));
         return getListOfFires(filePath, excelFile);
     }
 
-    private static List<FileDto> getListOfFires (String filePath, FileInputStream excelFile) throws IOException {
+    private static List<FileDto> getListOfFires(String filePath, FileInputStream excelFile) throws IOException {
         Workbook workbook = getExtension(filePath).equals("xlsx") ?
                 new XSSFWorkbook(excelFile) :
                 new HSSFWorkbook(excelFile);
-
         Sheet sheet = workbook.getSheet("Таблица по выездам");
         List<FileDto> fireList = readRows(sheet);
         workbook.close();
         return fireList;
     }
 
-    private static List<FileDto> readRows(Sheet sheet){
-        List <FileDto> fireList = new ArrayList<>();
+    private static List<FileDto> readRows(Sheet sheet) {
+        List<FileDto> fireList = new ArrayList<>();
         int lastRowIndex = setLastRowIndex(sheet);
-        for (int i = 5; i <= lastRowIndex; i++){
+        for (int i = 5; i <= lastRowIndex; i++) {
             FileDto fire = new FileDto();
             Row currentRow = sheet.getRow(i);
             int cellIndex = 0;
@@ -62,9 +62,10 @@ public class FileConverter {
         return fireList;
     }
 
-    private static int setLastRowIndex (Sheet sheet){
+    private static int setLastRowIndex(Sheet sheet) {
         int lastRowIndex = 0;
-        while (sheet.getRow(lastRowIndex).getCell(1) != null){
+        while (sheet.getRow(lastRowIndex)
+                .getCell(1) != null) {
             lastRowIndex++;
         }
         return lastRowIndex - 1;
@@ -72,9 +73,8 @@ public class FileConverter {
 
     private static FileDto setFireInfoByCategory(FileDto fileDto, final Row row, int cellIndex) {
         int lastInterestingCellIndex = 35;
-        for(int i = cellIndex; i <= lastInterestingCellIndex; i ++){
+        for (int i = cellIndex; i <= lastInterestingCellIndex; i++) {
             Cell cell = row.getCell(i);
-
             if (cellIndex == 0) {
                 fileDto.setId(sortCellData(cell));
             } else if (cellIndex == 1) {
@@ -150,9 +150,9 @@ public class FileConverter {
         }
         return fileDto;
     }
+
     private static String sortCellData(final Cell cell) {
         String result = "";
-
         switch (cell.getCellType()) {
             case STRING:
             case FORMULA:
@@ -163,17 +163,16 @@ public class FileConverter {
             case NUMERIC:
                 if (DateUtil.isCellInternalDateFormatted(cell)) {
                     Date date = cell.getDateCellValue();
-
                     SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm:ss");
                     SimpleDateFormat formatYearOnly = new SimpleDateFormat("yyyy");
                     SimpleDateFormat newDateFormat = new SimpleDateFormat("dd MMMM yyyy", new Locale("ru"));
                     SimpleDateFormat newFormatTime = new SimpleDateFormat("HH:mm");
-                    String timeStamp =formatTime.format(date);
+                    String timeStamp = formatTime.format(date);
                     String dateStamp = formatYearOnly.format(date);
 
-                    if (dateStamp.equals("1899")){
+                    if (dateStamp.equals("1899")) {
                         return newFormatTime.format(date);
-                    } else if (timeStamp.equals("00:00:00")){
+                    } else if (timeStamp.equals("00:00:00")) {
                         return newDateFormat.format(date);
                     }
                 } else {
@@ -192,16 +191,16 @@ public class FileConverter {
         byte[] bytes = jsonString.getBytes("utf-8");
         Byte[] bytesWrapArray = new Byte[bytes.length];
         int i = 0;
-        for(byte b : bytes){
+        for (byte b : bytes) {
             bytesWrapArray[i++] = b;
         }
         return bytesWrapArray;
     }
 
-    public static String convertFromBytesWrapArrayToString(Byte[] bytesWrapArray){
+    public static String convertFromBytesWrapArrayToString(Byte[] bytesWrapArray) {
         byte[] bytes = new byte[bytesWrapArray.length];
-        int i=0;
-        for(Byte b: bytesWrapArray) {
+        int i = 0;
+        for (Byte b : bytesWrapArray) {
             bytes[i++] = b.byteValue();
         }
         return new String(bytes, StandardCharsets.UTF_8);

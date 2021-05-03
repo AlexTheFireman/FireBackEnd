@@ -45,7 +45,7 @@ public class FileDto {
     public FileDto() {
     }
 
-     @Override
+    @Override
     public String toString() {
         return "FileDto [id=" + id + ", date=" + date + ", message=" + message + ", addressObjectFireFeature=" +
                 addressObjectFireFeature + ", district=" + district + ", fireStation=" + fireStation + ", destination=" +
@@ -61,5 +61,4 @@ public class FileDto {
                 firstNozzleTime + ", localizationTime=" + localizationTime + ", burningLiquidationTime=" +
                 burningLiquidationTime + ", totalLiquidationTime=" + totalLiquidationTime + ", comment=" + comment + "]";
     }
-
 }
