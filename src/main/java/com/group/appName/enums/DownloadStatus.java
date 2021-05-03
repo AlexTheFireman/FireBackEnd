@@ -1,7 +1,7 @@
-package com.group.appName.service;
+package com.group.appName.enums;
 
 public enum DownloadStatus {
     FILE_ALREADY_EXISTS,
     SUCCESS,
-    CHECK_FILE_EXTENSION;
+    CHECK_FILE_EXTENSION
 }

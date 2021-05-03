@@ -1,11 +1,11 @@
-package com.group.appName;
+package com.group.appName.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Fire {
+public class FileDto {
     private String id;
     private String date;
     private String message;
@@ -42,12 +42,12 @@ public class Fire {
     private String totalLiquidationTime;
     private String comment;
 
-    public Fire() {
+    public FileDto() {
     }
 
-     @Override
+    @Override
     public String toString() {
-        return "Fire [id=" + id + ", date=" + date + ", message=" + message + ", addressObjectFireFeature=" +
+        return "FileDto [id=" + id + ", date=" + date + ", message=" + message + ", addressObjectFireFeature=" +
                 addressObjectFireFeature + ", district=" + district + ", fireStation=" + fireStation + ", destination=" +
                 destination + ", whereWasTheFire=" + whereWasTheFire + ", rescueWorks=" + rescueWorks + ", amountOfRescuedPeople=" +
                 amountOfRescuedPeople + ", amountOfEvacuatedPeople=" + amountOfEvacuatedPeople + ", fireChiefRank=" +
@@ -61,5 +61,4 @@ public class Fire {
                 firstNozzleTime + ", localizationTime=" + localizationTime + ", burningLiquidationTime=" +
                 burningLiquidationTime + ", totalLiquidationTime=" + totalLiquidationTime + ", comment=" + comment + "]";
     }
-
 }

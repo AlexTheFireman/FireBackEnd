@@ -6,8 +6,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name ="files_upload")
+@Table(name = "files_upload")
 public class FileEntity {
+
     private String fileName;
     private Byte[] fileData;
 
@@ -16,15 +17,17 @@ public class FileEntity {
     public String getFileName() {
         return fileName;
     }
+
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
-    @Column(name = "file_data")
-    public Byte [] getFileData() {
+    @Column(name = "file_data", length = Integer.MAX_VALUE)
+    public Byte[] getFileData() {
         return fileData;
     }
-    public void setFileData(Byte [] fileData) {
+
+    public void setFileData(Byte[] fileData) {
         this.fileData = fileData;
     }
 }
